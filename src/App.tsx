@@ -9,7 +9,8 @@ function App() {
   const [todos,setTodos]=useState([])
   const [inputVal,setInputVal]=useState("")
   const [completed,setCompleted]=useState([])
-  const [showList, setShowList] = useState(false);
+  const [showCompleted, setShowCompleted]=useState(true)
+ 
 
   const handleAdd=()=>{
     if( inputVal!==""){ setTodos((todos) => [...todos, inputVal])}
@@ -23,30 +24,38 @@ function App() {
 
   const handleClear =() => {
     setTodos([])
+    setCompleted([])
   }
 
-  const boxClick =(item) => {
-    if (!completed.includes(item)) {
-      setCompleted((completed) => [...completed, item]);
+  const boxClick =(todo) => {
+    if (!completed.includes(todo)) {
+      setCompleted((completed) => [...completed, todo]);
+      setTodos(todos.filter((incompTodo) => !(incompTodo === todo)))
     }
   }
   
   const handleCompleted =() => {
-    setShowList(!showList);
+    if(showCompleted===true)
+      setShowCompleted(false)
+    else
+      setShowCompleted(true)
   }
+
+
   
   return (
     <>
       <ol>
-        {todos.map((todo) => (<li><input onClick={boxClick} type="checkbox" />{todo}</li>))}
-      </ol>
-      <ol>{completed.map((completed) => (<li><input type="text"  />{completed}</li>))}</ol>
+        {todos.map((todo) => (<li><input key={todo} onClick={() => boxClick(todo)} type="checkbox" />{todo}</li>))}
+      </ol> 
+     { showCompleted ? <ol>{completed.map((completed) => (<li>{completed}</li>))}</ol> : <ol></ol>}
       <input type="text" value={inputVal} onChange={(e) => {setInputVal(e.target.value)}} />
       <button type="submit" onClick={handleAdd}>Add</button>
       <button type="submit" onClick={handleDelete}>Delete</button>
       <button type="submit" onClick={handleClear}>ClearAll</button>
       <br />
-      <button type='submit' onClick={handleCompleted}> {showList ? 'Hide Completed' : 'Show Completed'}</button>
+      <button onClick={handleCompleted}>{showCompleted ? "HideCompleted":"ShowCompleted"}</button>
+      
       
 
     </>
